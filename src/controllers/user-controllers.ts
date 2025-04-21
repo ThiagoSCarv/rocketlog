@@ -5,14 +5,14 @@ import { prisma } from "@/database/prisma";
 import { AppError } from "@/utils/app-error";
 
 class UsersControllers {
-  async create(resquest: Request, response: Response, next: NextFunction) {
+  async create(request: Request, response: Response, next: NextFunction) {
     const bodySchema = z.object({
       name: z.string().trim().min(3),
       email: z.string().email(),
       password: z.string().min(6),
     });
 
-    const { name, email, password } = bodySchema.parse(resquest.body);
+    const { name, email, password } = bodySchema.parse(request.body);
 
     const userWithSameEmail = await prisma.user.findFirst({ where: { email } });
 
