@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
+import { authConfig } from "@/configs/auth";
 import { AppError } from "@/utils/app-error";
 import { compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 
 class SessionsControllers {
   async create(request: Request, response: Response, next: NextFunction) {
@@ -19,13 +21,20 @@ class SessionsControllers {
       throw new AppError("invalid email or password", 401);
     }
 
-    const passwordMatched = await compare(password, user.password)
+    const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
       throw new AppError("invalid email or password", 401);
     }
 
-    return response.json({ message: "ok" });
+    const { secret, expiresIn } = authConfig.jwt;
+
+    const token = sign({ role: user.role ?? "customer" }, secret, {
+      subject: user.id,
+      expiresIn,
+    });
+
+    return response.json({ token });
   }
 }
 
