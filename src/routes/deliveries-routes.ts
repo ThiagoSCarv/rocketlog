@@ -12,5 +12,6 @@ deliveriesRoutes.use(
 );
 
 deliveriesRoutes.post("/", deliveriesControllers.create);
+deliveriesRoutes.get("/", deliveriesControllers.index)
 
 export { deliveriesRoutes };
