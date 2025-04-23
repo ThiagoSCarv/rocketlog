@@ -1,5 +1,4 @@
 import request from "supertest";
-
 import { app } from "@/app";
 import { prisma } from "@/database/prisma";
 
@@ -32,10 +31,10 @@ describe("UsersController", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.message).toBe("user with same email already exists")
-  })
+    expect(response.body.message).toBe("user with same email already exists");
+  });
 
-  it("should throw a validation error if email is invalid", () => {
+  it("should throw a validation error if email is invalid", async () => {
     const response = await request(app).post("/users").send({
       name: "Test User2",
       email: "testuser",
@@ -44,5 +43,5 @@ describe("UsersController", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("validation error");
-  })
+  });
 });
